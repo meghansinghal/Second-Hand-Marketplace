@@ -20,6 +20,9 @@ public class Main {
         UserController userController = new UserController();
         UserView userView = new UserView();
 
+        OrderController orderController = new OrderController();
+        DeliveryController deliveryController = new DeliveryController();
+
         // Register
         userController.registerUser(buyer);
 
@@ -30,9 +33,24 @@ public class Main {
         boolean isLoggedIn = userController.loginUser(buyer, email, password);
 
         if (isLoggedIn) {
+
+            // Browse products
             buyer.browseProducts();
-            buyer.placeOrder();
+
+            // Place Order (DB Integrated)
+            Order order = new Order(buyer.getUserId(), 1, 50000);
+            int orderId = orderController.placeOrder(order);
+
+            // View Orders
+            orderController.viewOrders();
+
+            // Delivery Flow
+            deliveryController.createDelivery(orderId);
+            deliveryController.updateDeliveryStatus(orderId, "Shipped");
+
+            // Track Order
             buyer.trackOrder();
+
         } else {
             userView.showMessage("Login failed.");
         }
@@ -40,17 +58,17 @@ public class Main {
         // Logout
         userController.logoutUser(buyer);
 
-        // Product testing
+        // Product testing (Your module)
         ProductController controller = new ProductController();
 
         // Add product
         Product p1 = new Product(0, "Laptop", "Good condition", 50000, "Used", "Electronics");
         controller.addProduct(p1);
 
-        // Update
+        // Update product
         controller.updateProduct(1, "Gaming Laptop", 60000);
 
-        // Mark sold
+        // Mark product sold
         controller.markProductSold(1);
     }
 }

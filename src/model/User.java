@@ -16,6 +16,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.phone = phone;
+        
+    }
+
+    public int getUserId() {
+        return userId;
     }
 
     public void register() {
