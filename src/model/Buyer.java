@@ -3,7 +3,7 @@ package model;
 public class Buyer extends User {
 
     public Buyer(int userId, String name, String email, String password, String phone) {
-        super(userId, name, email, password, phone);
+        super(userId, name, email, password, phone, "Buyer");
     }
 
     public void browseProducts() {

@@ -1,101 +1,35 @@
 package controller;
 
+import dao.ProductDAO;
 import model.Product;
-import model.DBConnection;
 
-import java.sql.*;
+import java.util.List;
 
 public class ProductController {
 
-    // ADD PRODUCT
-    public void addProduct(Product product) {
-        String query = "INSERT INTO Product (title, description, price, product_condition, category, status, seller_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private final ProductDAO productDAO = new ProductDAO();
 
-        try (Connection con = DBConnection.getConnection()) {
-
-            if (con == null) {
-                System.out.println("ERROR: Cannot add product. DB not connected.");
-                return;
-            }
-
-            PreparedStatement ps = con.prepareStatement(query);
-
-            ps.setString(1, product.getTitle());
-            ps.setString(2, product.getDescription());
-            ps.setDouble(3, product.getPrice());
-            ps.setString(4, product.getCondition());
-            ps.setString(5, product.getCategory());
-            ps.setString(6, "Available");
-            ps.setInt(7, 1);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                System.out.println("SUCCESS: Product added successfully.");
-            } else {
-                System.out.println("ERROR: Failed to add product.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public boolean addProduct(Product product, int sellerId) {
+        return productDAO.createProduct(product, sellerId);
     }
 
-    // UPDATE PRODUCT
-    public void updateProduct(int productId, String newTitle, double newPrice) {
-        String query = "UPDATE Product SET title=?, price=? WHERE product_id=?";
-
-        try (Connection con = DBConnection.getConnection()) {
-
-            if (con == null) {
-                System.out.println("ERROR: Cannot update. DB not connected.");
-                return;
-            }
-
-            PreparedStatement ps = con.prepareStatement(query);
-
-            ps.setString(1, newTitle);
-            ps.setDouble(2, newPrice);
-            ps.setInt(3, productId);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                System.out.println("SUCCESS: Product updated successfully.");
-            } else {
-                System.out.println("ERROR: No product found with that ID.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public List<Product> getAllProducts() {
+        return productDAO.findAll();
     }
 
-    // MARK AS SOLD
-    public void markProductSold(int productId) {
-        String query = "UPDATE Product SET status='Sold' WHERE product_id=?";
+    public List<Product> getProductsBySeller(int sellerId) {
+        return productDAO.findBySeller(sellerId);
+    }
 
-        try (Connection con = DBConnection.getConnection()) {
+    public Product getProductById(int productId) {
+        return productDAO.findById(productId);
+    }
 
-            if (con == null) {
-                System.out.println("ERROR: Cannot update. DB not connected.");
-                return;
-            }
+    public boolean markProductSold(int productId) {
+        return productDAO.updateStatus(productId, "Sold");
+    }
 
-            PreparedStatement ps = con.prepareStatement(query);
-
-            ps.setInt(1, productId);
-
-            int rows = ps.executeUpdate();
-
-            if (rows > 0) {
-                System.out.println("SUCCESS: Product marked as sold.");
-            } else {
-                System.out.println("ERROR: Product not found.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public int getSellerIdByProduct(int productId) {
+        return productDAO.getSellerIdByProduct(productId);
     }
 }

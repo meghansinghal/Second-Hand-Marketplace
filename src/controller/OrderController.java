@@ -1,74 +1,31 @@
 package controller;
 
+import dao.OrderDAO;
 import model.Order;
-import model.DBConnection;
 
-import java.sql.*;
+import java.util.List;
 
 public class OrderController {
 
-    // PLACE ORDER
+    private final OrderDAO orderDAO = new OrderDAO();
+
     public int placeOrder(Order order) {
-        String query = "INSERT INTO Orders (buyer_id, product_id, total_amount, status, order_date) VALUES (?, ?, ?, ?, NOW())";
-
-        try (Connection con = DBConnection.getConnection();
-        PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setInt(1, order.getBuyerId());
-            ps.setInt(2, order.getProductId());
-            ps.setDouble(3, order.getTotalAmount());
-            ps.setString(4, order.getStatus());
-
-            ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) {
-                int orderId = rs.getInt(1);
-                System.out.println("Order placed with ID: " + orderId);
-                return orderId;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return -1;
+        return orderDAO.createOrder(order);
     }
 
-    // VIEW ORDERS
-    public void viewOrders() {
-        String query = "SELECT * FROM Orders";
-
-        try (Connection con = DBConnection.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(query)) {
-
-            while (rs.next()) {
-                System.out.println("\nOrder ID: " + rs.getInt("order_id"));
-                System.out.println("Buyer ID: " + rs.getInt("buyer_id"));
-                System.out.println("Product ID: " + rs.getInt("product_id"));
-                System.out.println("Status: " + rs.getString("status"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public List<Order> getOrdersByBuyer(int buyerId) {
+        return orderDAO.findOrdersByBuyer(buyerId);
     }
 
-    // CANCEL ORDER
-    public void cancelOrder(int orderId) {
-        String query = "UPDATE Orders SET status='Cancelled' WHERE order_id=?";
+    public List<Order> getOrdersBySeller(int sellerId) {
+        return orderDAO.findOrdersBySeller(sellerId);
+    }
 
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+    public List<Order> getAllOrders() {
+        return orderDAO.findAllOrders();
+    }
 
-            ps.setInt(1, orderId);
-            ps.executeUpdate();
-
-            System.out.println("Order cancelled.");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public boolean cancelOrder(int orderId) {
+        return orderDAO.cancelOrder(orderId);
     }
 }

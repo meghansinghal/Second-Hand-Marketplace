@@ -19,9 +19,39 @@ public class Order {
         this.orderDate = new Date();
     }
 
-    public int getBuyerId() { return buyerId; }
-    public int getProductId() { return productId; }
-    public double getTotalAmount() { return totalAmount; }
-    public String getStatus() { return status; }
-    public Date getOrderDate() { return orderDate; }
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public int getBuyerId() {
+        return buyerId;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 }

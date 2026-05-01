@@ -1,69 +1,29 @@
 package controller;
 
-import model.DBConnection;
-import java.sql.*;
+import dao.DeliveryDAO;
+import model.Delivery;
 
 public class DeliveryController {
 
-    public void createDelivery(int orderId) {
+    private final DeliveryDAO deliveryDAO = new DeliveryDAO();
 
-        try (Connection con = DBConnection.getConnection()) {
-
-            // ✅ Check if order exists
-            String checkQuery = "SELECT * FROM Orders WHERE order_id=?";
-            PreparedStatement check = con.prepareStatement(checkQuery);
-            check.setInt(1, orderId);
-            ResultSet rs = check.executeQuery();
-
-            if (!rs.next()) {
-                System.out.println("Order does not exist!");
-                return;
-            }
-
-            // ✅ Insert delivery
-            String query = "INSERT INTO Delivery (order_id, delivery_status) VALUES (?, 'Pending')";
-            PreparedStatement ps = con.prepareStatement(query);
-            ps.setInt(1, orderId);
-            ps.executeUpdate();
-
-            System.out.println("Delivery created.");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public int createDelivery(Delivery delivery) {
+        return deliveryDAO.createDelivery(delivery);
     }
 
-    public void updateDeliveryStatus(int orderId, String status) {
-        String query = "UPDATE Delivery SET delivery_status=? WHERE order_id=?";
-
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-
-            ps.setString(1, status);
-            ps.setInt(2, orderId);
-            ps.executeUpdate();
-
-            System.out.println("Delivery updated.");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Delivery getDeliveryByOrder(int orderId) {
+        return deliveryDAO.findByOrderId(orderId);
     }
 
-    public void viewDelivery() {
-        String query = "SELECT * FROM Delivery";
+    public boolean updateDeliveryStatus(int deliveryId, String status) {
+        return deliveryDAO.updateDeliveryStatus(deliveryId, status);
+    }
 
-        try (Connection con = DBConnection.getConnection();
-             Statement st = con.createStatement();
-             ResultSet rs = st.executeQuery(query)) {
+    public boolean assignDeliveryPartner(int deliveryId, String partnerName) {
+        return deliveryDAO.assignDeliveryPartner(deliveryId, partnerName);
+    }
 
-            while (rs.next()) {
-                System.out.println("\nOrder ID: " + rs.getInt("order_id"));
-                System.out.println("Status: " + rs.getString("delivery_status"));
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public boolean markDelivered(int deliveryId) {
+        return deliveryDAO.markDelivered(deliveryId);
     }
 }

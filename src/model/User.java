@@ -7,20 +7,45 @@ public class User {
     protected String email;
     protected String password;
     protected String phone;
+    protected String role;
 
     public User() {}
 
     public User(int userId, String name, String email, String password, String phone) {
+        this(userId, name, email, password, phone, "Buyer");
+    }
+
+    public User(int userId, String name, String email, String password, String phone, String role) {
         this.userId = userId;
         this.name = name;
         this.email = email;
         this.password = password;
         this.phone = phone;
-        
+        this.role = role;
     }
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public void register() {
@@ -28,7 +53,10 @@ public class User {
     }
 
     public boolean login(String email, String password) {
-        if (this.email.equals(email) && this.password.equals(password)) {
+        if (email == null || password == null) {
+            return false;
+        }
+        if (this.email != null && this.email.equals(email) && this.password.equals(password)) {
             System.out.println(name + " logged in successfully.");
             return true;
         }
