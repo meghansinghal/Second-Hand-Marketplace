@@ -1,4 +1,4 @@
-# 🛒 UT Second-Hand Marketplace
+# 🛒 Second-Hand Marketplace
 
 An end-to-end, Java-based desktop marketplace application that enables users to list, discover, buy, and sell pre-owned items within a structured, database-driven platform.
 
@@ -51,10 +51,12 @@ Second-Hand-Marketplace/
 mysql -u root -p < database-schema.sql
 ```
 
+
 2. Configure Database Credentials
 Ensure your database connection string, username, and password in your Java application configuration match your local MySQL settings:
 - Host: localhost:3306
 - Driver: com.mysql.cj.jdbc.Driver
+
 
 3. Build & Run
 Compile the Java source files while linking the JDBC library in lib/:
